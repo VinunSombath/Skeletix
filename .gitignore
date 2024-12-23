@@ -1,0 +1,8 @@
+# Ignore Unity generated files
+Library/
+Temp/
+*.log
+*.obj
+*.user
+*.unityproj
+*.sln
