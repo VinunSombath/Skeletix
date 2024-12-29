@@ -6,12 +6,10 @@ public class RandomSpawner : MonoBehaviour
     public GameObject[] objectsToSpawn;
     public RectTransform canvasRect;
     public float spawnInterval = 1f;
-    public float spawnDuration = 59f; 
+    public float spawnDuration = 59f;
 
     private float timer = 0f;
-    private List<GameObject> spawnedObjects = new List<GameObject>(); 
-
-
+    private List<GameObject> spawnedObjects = new List<GameObject>();
 
     void Start()
     {
@@ -22,7 +20,6 @@ public class RandomSpawner : MonoBehaviour
     {
         timer += Time.deltaTime;
 
-        // Stop spawning object
         if (timer >= spawnDuration)
         {
             CancelInvoke("SpawnRandomObject");
@@ -33,13 +30,14 @@ public class RandomSpawner : MonoBehaviour
     void SpawnRandomObject()
     {
         GameObject randomObject = objectsToSpawn[Random.Range(0, objectsToSpawn.Length)];
-
         Vector2 randomPosition = GetRandomPositionInCanvas();
 
         GameObject spawnedObject = Instantiate(randomObject, canvasRect);
         spawnedObject.transform.localPosition = randomPosition;
-
         spawnedObjects.Add(spawnedObject);
+
+        int backgroundIndex = canvasRect.GetSiblingIndex();
+        spawnedObject.transform.SetSiblingIndex(backgroundIndex + 1);
 
         Rigidbody2D rb = spawnedObject.GetComponent<Rigidbody2D>();
         if (rb != null)

@@ -1,38 +1,57 @@
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class GameTimer : MonoBehaviour
 {
-    public TextMeshProUGUI timerText; 
-    public float gameDuration = 10f; 
+    public TextMeshProUGUI timerText;
+    public float gameDuration = 60f;
     private float timeRemaining;
 
-    void Start()
+    public AudioSource gameAudio;
+
+    private void Start()
     {
         timeRemaining = gameDuration;
+
+       
+        if (gameAudio != null)
+        {
+            gameAudio.Play();
+        }
     }
 
-    void Update()
+    private void Update()
     {
-        if (timeRemaining > 1)
+        if (timeRemaining > 0)
         {
             timeRemaining -= Time.deltaTime;
             UpdateTimerDisplay();
-        }   
+        }
         else
         {
             EndGame();
         }
     }
 
-    void UpdateTimerDisplay()
+    private void UpdateTimerDisplay()
     {
-        int seconds = Mathf.FloorToInt(timeRemaining);
-        timerText.text = seconds.ToString(); 
+        int seconds = Mathf.CeilToInt(timeRemaining);
+        timerText.text = seconds.ToString();
     }
 
-    void EndGame()
+    private void EndGame()
     {
-        Debug.Log("Game Over!");
+        timeRemaining = 0;
+        timerText.text = "0";
+
+        if (gameAudio != null && gameAudio.isPlaying)
+        {
+            gameAudio.Stop();
+        }
+
+        ScoreManager.instance.DetermineWinner();
+
+        SceneManager.LoadScene("Finish Game");
     }
 }

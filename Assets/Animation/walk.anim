@@ -20,15 +20,15 @@ AnimationClip:
   m_PPtrCurves:
   - serializedVersion: 2
     curve:
-    - time: 0
+    - time: 0.05
       value: {fileID: 21300000, guid: 72c1fbf66f19f7b46bb7ee368d836555, type: 3}
-    - time: 0.21666667
+    - time: 0.25
       value: {fileID: 21300000, guid: 5105e391048d7fe4b9ce9cded48a252a, type: 3}
-    - time: 0.43333334
+    - time: 0.46666667
       value: {fileID: 21300000, guid: 347bd9aca338f724b91da63731d1db37, type: 3}
-    - time: 0.6333333
+    - time: 0.6666667
       value: {fileID: 21300000, guid: d60cd5aa0872c9342a37a685cd95b18b, type: 3}
-    - time: 0.85
+    - time: 0.8833333
       value: {fileID: 21300000, guid: 3c20b9e4e8748f941896b1f04ed47ec7, type: 3}
     - time: 1.0666667
       value: {fileID: 21300000, guid: 76b87968ae11f214099391554471c087, type: 3}

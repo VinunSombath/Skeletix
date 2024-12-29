@@ -5,7 +5,7 @@ public class CollisionControllerBombAndBrick : MonoBehaviour
 {
     private GameObject pickedObject = null;
 
-    public Vector3 pickupOffset = new Vector3(28f, 0f, 0f); // Offset for holding the object
+    public Vector3 pickupOffset = new Vector3(0.5f, 0f, 0f); // Offset for holding the object relative to player's forward direction
     public float throwForce = 1000f; // Force when throwing an object
 
     private Vector2 lastMovementDirection = Vector2.zero; // Last movement direction for throwing
@@ -57,67 +57,42 @@ public class CollisionControllerBombAndBrick : MonoBehaviour
             if (rb != null && rb.velocity == Vector2.zero)
             {
                 PlayAudio("pick");
-                
                 PickUpObject(collision.gameObject);
             }
             else if (rb != null && rb.velocity != Vector2.zero)
             {
                 PlayAudio("hit");
-
-                Transform healthSystem = transform.root.Find("HealthSystem"); // Locate the HealthSystem object
-                Transform playerHealth = null;
-
-                if (gameObject.name == "1st Player")
-                {
-                    playerHealth = healthSystem.Find("Player1Health");
-                }
-                else if (gameObject.name == "2nd Player")
-                {
-                    playerHealth = healthSystem.Find("Player2Health");
-                }
-
-                if (playerHealth != null)
-                {
-                    // Find the HealthManager on the PlayerHealth object
-                    HealthManager healthManager = playerHealth.GetComponent<HealthManager>();
-                    if (healthManager != null)
-                    {
-                        // Let the HealthManager handle the heart destruction
-                        healthManager.TakeDamage();
-                    }
-                    else
-                    {
-                        Debug.LogError($"HealthManager not found on {playerHealth.name}!");
-                    }
-                }
-                else
-                {
-                    Debug.LogError("PlayerHealth container not found!");
-                }
-
+                HandlePlayerDamage();
                 Destroy(collision.gameObject); // Destroy the brick
             }
-
         }
     }
-
 
     private void PickUpObject(GameObject obj)
     {
         pickedObject = obj;
         pickedObject.transform.SetParent(transform);
-        pickedObject.transform.localPosition = pickupOffset;
-        pickedObject.layer = LayerMask.NameToLayer("ThrownObjects");
 
         Rigidbody2D rb = pickedObject.GetComponent<Rigidbody2D>();
         if (rb != null)
         {
             rb.velocity = Vector2.zero; // Ensure no residual velocity
         }
+
+        // Set layer for the picked object
+        pickedObject.layer = LayerMask.NameToLayer("ThrownObjects");
     }
 
     private void Update()
     {
+        // Update the position of the picked object relative to the player's facing direction
+        if (pickedObject != null)
+        {
+            // Adjust the position based on the player's forward direction
+            Vector3 facingOffset = transform.right * pickupOffset.x + transform.up * pickupOffset.y;
+            pickedObject.transform.position = transform.position + facingOffset;
+        }
+
         if (joystick == null) return;
 
         Vector2 joystickDirection = joystick.joystickVec;
@@ -156,4 +131,35 @@ public class CollisionControllerBombAndBrick : MonoBehaviour
         }
     }
 
+    private void HandlePlayerDamage()
+    {
+        Transform healthSystem = transform.root.Find("HealthSystem"); // Locate the HealthSystem object
+        Transform playerHealth = null;
+
+        if (gameObject.name == "1st Player")
+        {
+            playerHealth = healthSystem.Find("Player1Health");
+        }
+        else if (gameObject.name == "2nd Player")
+        {
+            playerHealth = healthSystem.Find("Player2Health");
+        }
+
+        if (playerHealth != null)
+        {
+            HealthManager healthManager = playerHealth.GetComponent<HealthManager>();
+            if (healthManager != null)
+            {
+                healthManager.TakeDamage();
+            }
+            else
+            {
+                Debug.LogError($"HealthManager not found on {playerHealth.name}!");
+            }
+        }
+        else
+        {
+            Debug.LogError("PlayerHealth container not found!");
+        }
+    }
 }

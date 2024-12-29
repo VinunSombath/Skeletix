@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Player : MonoBehaviour
 {
     public MovementJoyStick movementJoyStick;
@@ -27,16 +26,12 @@ public class Player : MonoBehaviour
     {
         if (movementJoyStick.joystickVec.magnitude > 0)
         {
-            // Update the player's velocity
             rb.velocity = movementJoyStick.joystickVec * playerSpeed;
 
-            // Calculate the rotation angle based on joystick input
             float angle = Mathf.Atan2(movementJoyStick.joystickVec.y, movementJoyStick.joystickVec.x) * Mathf.Rad2Deg;
-
             joystickDirection = Quaternion.Euler(0, 0, angle);
             transform.rotation = joystickDirection;
 
-           
             animator.SetFloat("Speed", rb.velocity.magnitude);
 
             isJoystickReleased = false;
@@ -45,7 +40,6 @@ public class Player : MonoBehaviour
         {
             rb.velocity = Vector2.zero;
 
- 
             animator.SetFloat("Speed", 0);
 
             if (!isJoystickReleased)
@@ -78,7 +72,7 @@ public class Player : MonoBehaviour
         {
             transform.rotation = Quaternion.Lerp(startRotation, joystickDirection, elapsedTime / hitDuration);
             elapsedTime += Time.deltaTime;
-            yield return null;
+            yield return null;  
         }
 
         transform.rotation = joystickDirection;
